@@ -3,8 +3,11 @@ const express = require('express');
 const router = express.Router();
 const userController = require('./controllers/userController');
 
-// Home page GET request
+// GET requests
 router.get("/", userController.home);
+
+// POST requests
+router.post("/register", userController.register);
 
 // Export router
 module.exports = router;
