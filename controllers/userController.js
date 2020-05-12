@@ -16,7 +16,13 @@ exports.register = function(req, res) {
     // Create new User object
     let user = new User(req.body);
     user.register();
-    res.send("Thanks for registring");
+
+    // Check for registration errors
+    if (user.errors.length) {
+        res.send(user.errors);
+    } else {
+        res.send("Congrats, no errors");
+    }
 }
 
 // Home function
