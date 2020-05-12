@@ -9,9 +9,9 @@ let User = function(receivedData) {
 
 // Methods
 User.prototype.register = function() {
-    // Validate user data
+    // Clean up and validate user data
+    this.cleanUp();
     this.validate();
-
     // If there are no validation errors - save user data to DB
 }
 
@@ -27,6 +27,20 @@ User.prototype.validate = function() {
 
     if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push("Password must be at least 12 characters.")}
     if (this.data.password.length > 100) {this.errors.push("Password cannot exceed 100 characters.")}
+}
+
+User.prototype.cleanUp = function() {
+    // Make sure fields are string
+    if (typeof(this.data.username) != "string") {this.data.username = ""}
+    if (typeof(this.data.email) != "string") {this.data.email = ""}
+    if (typeof(this.data.password) != "string") {this.data.password = ""}
+
+    // Get rid of misc properties
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),
+        email: this.data.email.trim().toLowerCase(),
+        password: this.data.password
+    }
 }
 
 // Export User model function
