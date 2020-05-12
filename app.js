@@ -4,6 +4,8 @@ const express = require("express");
 // Express app
 const app = express();
 
+// Setup public folder
+app.use(express.static("public"));
 // Let express know the views folder
 app.set("views", "views");
 // Use template engine
