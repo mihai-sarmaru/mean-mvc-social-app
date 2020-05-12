@@ -1,3 +1,6 @@
+// Require User model
+const User = require('../models/User');
+
 // Login function
 exports.login = function() {
 
@@ -10,6 +13,8 @@ exports.logout = function() {
 
 // Register user function
 exports.register = function(req, res) {
+    // Create new User object
+    let user = new User();
     res.send("Thanks for registring");
 }
 
