@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Predator7/mean-mvc-social-app#readme",
   "dependencies": {
+    "ejs": "^3.1.2",
     "express": "^4.17.1",
     "nodemon": "^2.0.3"
   }
