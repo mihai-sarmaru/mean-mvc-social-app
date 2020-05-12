@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Predator7/mean-mvc-social-app/issues"
   },
-  "homepage": "https://github.com/Predator7/mean-mvc-social-app#readme"
+  "homepage": "https://github.com/Predator7/mean-mvc-social-app#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
