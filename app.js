@@ -5,6 +5,10 @@ const router = require("./router");
 // Express app
 const app = express();
 
+// Use submitted data to request object, and JSON data
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
+
 // Setup public folder
 app.use(express.static("public"));
 // Let express know the views folder

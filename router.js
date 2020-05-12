@@ -1,11 +1,13 @@
 // Require express and setup router
 const express = require('express');
 const router = express.Router();
+const userController = require('./controllers/userController');
 
-// Home page GET request
-router.get("/", (req, res) => {
-    res.render("home-guest");
-});
+// GET requests
+router.get("/", userController.home);
+
+// POST requests
+router.post("/register", userController.register);
 
 // Export router
 module.exports = router;
