@@ -4,9 +4,14 @@ const express = require("express");
 // Express app
 const app = express();
 
+// Let express know the views folder
+app.set("views", "views");
+// Use template engine
+app.set("view engine", "ejs");
+
 // Home page GET route
 app.get("/", (req, res) => {
-    res.send("Welcome to our new app");
+    res.render("home-guest");
 });
 
 // Listen on port 3000
