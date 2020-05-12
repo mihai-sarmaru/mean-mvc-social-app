@@ -14,7 +14,8 @@ exports.logout = function() {
 // Register user function
 exports.register = function(req, res) {
     // Create new User object
-    let user = new User();
+    let user = new User(req.body);
+    user.register();
     res.send("Thanks for registring");
 }
 
