@@ -26,13 +26,15 @@ User.prototype.login = function() {
         // Clean up form
         this.cleanUp();
 
-        // Find user in DB - username, callback
-        usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => {
+        // Find user in DB - username (use promise)
+        usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
             if (attemptedUser && attemptedUser.password == this.data.password) {
-                resolve("Congrats");
+                resolve("Congrats!");
             } else {
-                reject("Invalid user / password");
+                reject("Invalid user / password.");
             }
+        }).catch((e) => {
+            reject("Please try again later.");
         });
     });
 }
