@@ -4,7 +4,7 @@
   "description": "Small simple social app for learning MEAN stack and MVC pattern",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app",
+    "dev": "nodemon db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,8 +19,10 @@
   },
   "homepage": "https://github.com/Predator7/mean-mvc-social-app#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
+    "mongodb": "^3.5.7",
     "nodemon": "^2.0.3",
     "validator": "^13.0.0"
   }
