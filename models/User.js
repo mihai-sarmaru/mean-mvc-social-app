@@ -23,6 +23,15 @@ User.prototype.register = function() {
 User.prototype.login = function() {
     // Clean up form
     this.cleanUp();
+
+    // Find user in DB - username, callback
+    usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => {
+        if (attemptedUser && attemptedUser.password == this.data.password) {
+            console.log("Correct login");
+        } else {
+            console.log("Invalid user / password");
+        }
+    });
 }
 
 User.prototype.validate = function() {
