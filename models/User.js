@@ -20,6 +20,11 @@ User.prototype.register = function() {
     }
 }
 
+User.prototype.login = function() {
+    // Clean up form
+    this.cleanUp();
+}
+
 User.prototype.validate = function() {
     if (this.data.username == "") {this.errors.push("You must provide a username.")}
     if (this.data.password == "") {this.errors.push("You must provide a password.")}

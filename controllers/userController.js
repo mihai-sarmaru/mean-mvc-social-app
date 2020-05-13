@@ -2,11 +2,12 @@
 const User = require('../models/User');
 
 // Login function
-exports.login = function() {
-
+exports.login = function(req, res) {
+    let user = new User(req.body);
+    user.login();
 }
 
-//Logout function
+// Logout function
 exports.logout = function() {
     
 }
