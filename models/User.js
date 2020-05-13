@@ -1,5 +1,6 @@
 // Require
 const validator = require('validator');
+const usersCollection = require("../db").collection("users");
 
 // Constructor with params and properties
 let User = function(receivedData) {
@@ -12,7 +13,11 @@ User.prototype.register = function() {
     // Clean up and validate user data
     this.cleanUp();
     this.validate();
+
     // If there are no validation errors - save user data to DB
+    if (!this.errors.length) {
+        usersCollection.insertOne(this.data);
+    }
 }
 
 User.prototype.validate = function() {
