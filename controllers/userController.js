@@ -4,7 +4,12 @@ const User = require('../models/User');
 // Login function
 exports.login = function(req, res) {
     let user = new User(req.body);
-    user.login();
+    // Using promises instead of callback
+    user.login().then((result) => {
+        res.send(result);
+    }).catch((e) => {
+        res.send(e);
+    });
 }
 
 // Logout function

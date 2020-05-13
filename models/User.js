@@ -21,16 +21,19 @@ User.prototype.register = function() {
 }
 
 User.prototype.login = function() {
-    // Clean up form
-    this.cleanUp();
+    // Using promise instead of traditional callback methods
+    return new Promise((resolve, reject) => {
+        // Clean up form
+        this.cleanUp();
 
-    // Find user in DB - username, callback
-    usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => {
-        if (attemptedUser && attemptedUser.password == this.data.password) {
-            console.log("Correct login");
-        } else {
-            console.log("Invalid user / password");
-        }
+        // Find user in DB - username, callback
+        usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => {
+            if (attemptedUser && attemptedUser.password == this.data.password) {
+                resolve("Congrats");
+            } else {
+                reject("Invalid user / password");
+            }
+        });
     });
 }
 
