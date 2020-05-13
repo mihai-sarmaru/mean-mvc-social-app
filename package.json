@@ -4,7 +4,7 @@
   "description": "Small simple social app for learning MEAN stack and MVC pattern",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app",
+    "dev": "nodemon db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

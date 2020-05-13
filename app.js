@@ -19,5 +19,5 @@ app.set("view engine", "ejs");
 // Use main router
 app.use("/", router);
 
-// Listen on port 3000
-app.listen(3000);
+// Export express application
+module.exports = app;
