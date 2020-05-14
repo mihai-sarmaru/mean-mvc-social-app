@@ -32,20 +32,21 @@ exports.logout = function(req, res) {
 exports.register = function(req, res) {
     // Create new User object
     let user = new User(req.body);
-    user.register();
-
-    // Check for registration errors
-    if (user.errors.length) {
+    user.register().then(() => {
+        // Create session data and redirect
+        req.session.user = {username: user.data.username};
+        req.session.save(() => {
+            res.redirect("/");
+        });
+    }).catch((regErrors) => {
         // Use flash messages
-        user.errors.forEach((error) => {
+        regErrors.forEach((error) => {
             req.flash("regErrors", error);
         });
         req.session.save(() => {
             res.redirect("/");
         });
-    } else {
-        res.send("Congrats, no errors");
-    }
+    });
 }
 
 // Home function
