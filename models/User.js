@@ -1,6 +1,7 @@
 // Require
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const md5 = require("md5");
 const usersCollection = require("../db").db().collection("users");
 
 // Constructor with params and properties
@@ -25,6 +26,7 @@ User.prototype.register = function() {
             // Insert user into DB
             await usersCollection.insertOne(this.data);
             // Resolve promise
+            this.getAvatar();
             resolve();
         } else {
             // Reject promise
@@ -42,6 +44,8 @@ User.prototype.login = function() {
         // Find user in DB - username (use promise)
         usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
             if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+                this.data = attemptedUser;
+                this.getAvatar();
                 resolve("Congrats!");
             } else {
                 reject("Invalid user / password.");
@@ -93,6 +97,12 @@ User.prototype.cleanUp = function() {
         email: this.data.email.trim().toLowerCase(),
         password: this.data.password
     }
+}
+
+User.prototype.getAvatar = function() {
+    // Gravatar link, email is MD5 hashed, s - size param:
+    // https://gravatar.com/avatar/email?s=128
+    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
 }
 
 // Export User model function

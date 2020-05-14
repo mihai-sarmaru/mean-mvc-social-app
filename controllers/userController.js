@@ -7,7 +7,7 @@ exports.login = function(req, res) {
     // Using promises instead of callback
     user.login().then((result) => {
         // Use session object and save it manually
-        req.session.user = {username: user.data.username};
+        req.session.user = {username: user.data.username, avatar: user.avatar};
         req.session.save(() => {
             res.redirect("/");
         });
@@ -34,7 +34,7 @@ exports.register = function(req, res) {
     let user = new User(req.body);
     user.register().then(() => {
         // Create session data and redirect
-        req.session.user = {username: user.data.username};
+        req.session.user = {username: user.data.username, avatar: user.avatar};
         req.session.save(() => {
             res.redirect("/");
         });
@@ -54,7 +54,7 @@ exports.home = function(req, res) {
     // Check for session
     if (req.session.user) {
         // Pass session username
-        res.render("home-dashboard", {username: req.session.user.username});
+        res.render("home-dashboard", {username: req.session.user.username, avatar: req.session.user.avatar});
     } else {
         // Pass errors flash message
         res.render("home-guest", {errors: req.flash("errors"), regErrors: req.flash("regErrors")});
