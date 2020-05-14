@@ -12,7 +12,11 @@ exports.login = function(req, res) {
             res.redirect("/");
         });
     }).catch((e) => {
-        res.send(e);
+        // Add flash message and redirect to home
+        req.flash("errors", e);
+        req.session.save(() => {
+            res.redirect("/");
+        });
     });
 }
 
@@ -42,8 +46,10 @@ exports.register = function(req, res) {
 exports.home = function(req, res) {
     // Check for session
     if (req.session.user) {
+        // Pass session username
         res.render("home-dashboard", {username: req.session.user.username});
     } else {
-        res.render("home-guest");
+        // Pass errors flash message
+        res.render("home-guest", {errors: req.flash("errors")});
     }
 }

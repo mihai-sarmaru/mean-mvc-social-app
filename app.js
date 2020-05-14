@@ -1,6 +1,7 @@
 // Require packages
 const express = require("express");
 const session = require("express-session");
+const flash = require("connect-flash");
 const MongoStore = require("connect-mongo")(session);
 const router = require("./router");
 
@@ -16,10 +17,11 @@ let sessionOptions = session({
     cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}
 });
 
-// Use submitted user data to request object, JSON data, sessions
+// Use submitted user data to request object, JSON data, sessions, flash messages
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(sessionOptions);
+app.use(flash());
 
 // Setup public folder
 app.use(express.static("public"));
