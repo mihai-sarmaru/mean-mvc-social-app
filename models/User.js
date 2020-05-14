@@ -56,7 +56,7 @@ User.prototype.validate = function() {
     if (this.data.password.username > 0) {this.errors.push("Username cannot exceed 30 characters.")}
 
     if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push("Password must be at least 12 characters.")}
-    if (this.data.password.length > 100) {this.errors.push("Password cannot exceed 100 characters.")}
+    if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
 }
 
 User.prototype.cleanUp = function() {
