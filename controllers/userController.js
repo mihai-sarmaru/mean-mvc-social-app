@@ -6,9 +6,11 @@ exports.login = function(req, res) {
     let user = new User(req.body);
     // Using promises instead of callback
     user.login().then((result) => {
-        // Use session object
+        // Use session object and save it manually
         req.session.user = {username: user.data.username};
-        res.send(result);
+        req.session.save(() => {
+            res.redirect("/");
+        });
     }).catch((e) => {
         res.send(e);
     });
