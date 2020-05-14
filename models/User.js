@@ -1,7 +1,7 @@
 // Require
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const usersCollection = require("../db").collection("users");
+const usersCollection = require("../db").db().collection("users");
 
 // Constructor with params and properties
 let User = function(receivedData) {

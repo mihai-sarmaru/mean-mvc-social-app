@@ -1,6 +1,7 @@
 // Require packages
 const express = require("express");
 const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
 const router = require("./router");
 
 // Express app
@@ -9,6 +10,7 @@ const app = express();
 // Session configuration
 let sessionOptions = session({
     secret: "this is a string that should not be guessed",
+    store: new MongoStore({client: require("./db")}),
     resave: false,
     saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}
