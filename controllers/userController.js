@@ -37,7 +37,7 @@ exports.register = function(req, res) {
 exports.home = function(req, res) {
     // Check for session
     if (req.session.user) {
-        res.render("home-dashboard");
+        res.render("home-dashboard", {username: req.session.user.username});
     } else {
         res.render("home-guest");
     }
