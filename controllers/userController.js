@@ -15,8 +15,11 @@ exports.login = function(req, res) {
 }
 
 // Logout function
-exports.logout = function() {
-    
+exports.logout = function(req, res) {
+    // Destroy session and use callback for response
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
 }
 
 // Register user function

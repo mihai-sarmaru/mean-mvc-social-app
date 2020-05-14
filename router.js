@@ -9,6 +9,7 @@ router.get("/", userController.home);
 // POST requests
 router.post("/register", userController.register);
 router.post("/login", userController.login);
+router.post("/logout", userController.logout);
 
 // Export router
 module.exports = router;
