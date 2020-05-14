@@ -6,6 +6,8 @@ exports.login = function(req, res) {
     let user = new User(req.body);
     // Using promises instead of callback
     user.login().then((result) => {
+        // Use session object
+        req.session.user = {username: user.data.username};
         res.send(result);
     }).catch((e) => {
         res.send(e);
@@ -33,5 +35,10 @@ exports.register = function(req, res) {
 
 // Home function
 exports.home = function(req, res) {
-    res.render("home-guest");
+    // Check for session
+    if (req.session.user) {
+        res.send("Welcome to the app.");
+    } else {
+        res.render("home-guest");
+    }
 }
