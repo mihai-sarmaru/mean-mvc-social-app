@@ -1,6 +1,7 @@
 // Require
+const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const usersCollection = require("../db").collection("users");
+const usersCollection = require("../db").db().collection("users");
 
 // Constructor with params and properties
 let User = function(receivedData) {
@@ -16,8 +17,32 @@ User.prototype.register = function() {
 
     // If there are no validation errors - save user data to DB
     if (!this.errors.length) {
+        // Hash user password
+        let salt = bcrypt.genSaltSync(10);
+        this.data.password = bcrypt.hashSync(this.data.password, salt);
+
+        // Insert user into DB
         usersCollection.insertOne(this.data);
     }
+}
+
+User.prototype.login = function() {
+    // Using promise instead of traditional callback methods
+    return new Promise((resolve, reject) => {
+        // Clean up form
+        this.cleanUp();
+
+        // Find user in DB - username (use promise)
+        usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
+            if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+                resolve("Congrats!");
+            } else {
+                reject("Invalid user / password.");
+            }
+        }).catch((e) => {
+            reject("Please try again later.");
+        });
+    });
 }
 
 User.prototype.validate = function() {
@@ -31,7 +56,7 @@ User.prototype.validate = function() {
     if (this.data.password.username > 0) {this.errors.push("Username cannot exceed 30 characters.")}
 
     if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push("Password must be at least 12 characters.")}
-    if (this.data.password.length > 100) {this.errors.push("Password cannot exceed 100 characters.")}
+    if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
 }
 
 User.prototype.cleanUp = function() {

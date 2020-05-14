@@ -2,13 +2,26 @@
 const User = require('../models/User');
 
 // Login function
-exports.login = function() {
-
+exports.login = function(req, res) {
+    let user = new User(req.body);
+    // Using promises instead of callback
+    user.login().then((result) => {
+        // Use session object and save it manually
+        req.session.user = {username: user.data.username};
+        req.session.save(() => {
+            res.redirect("/");
+        });
+    }).catch((e) => {
+        res.send(e);
+    });
 }
 
-//Logout function
-exports.logout = function() {
-    
+// Logout function
+exports.logout = function(req, res) {
+    // Destroy session and use callback for response
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
 }
 
 // Register user function
@@ -27,5 +40,10 @@ exports.register = function(req, res) {
 
 // Home function
 exports.home = function(req, res) {
-    res.render("home-guest");
+    // Check for session
+    if (req.session.user) {
+        res.render("home-dashboard", {username: req.session.user.username});
+    } else {
+        res.render("home-guest");
+    }
 }
