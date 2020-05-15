@@ -1,5 +1,5 @@
 // Require
-const post = require("../models/Post");
+const Post = require("../models/Post");
 
 // Create post method
 exports.viewCreateScreen = function(req, res) {
@@ -8,7 +8,7 @@ exports.viewCreateScreen = function(req, res) {
 
 // Create post method
 exports.create = function(req, res) {
-    let post = new post(req.body);
+    let post = new Post(req.body);
     post.create().then(() => {
         res.send("New post created.");
     }).catch((errors) => {
