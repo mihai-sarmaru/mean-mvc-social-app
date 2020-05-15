@@ -1,6 +1,20 @@
 // Require User model
 const User = require('../models/User');
 
+//
+exports.mustBeLoggedIn = function(req, res, next) {
+    if (req.session.user) {
+        // Express run next function in route
+        next();
+    } else {
+        req.flash("errors", "You must be logged in to perform that action.");
+        req.session.save(() => {
+            res.redirect("/");
+        });
+
+    }
+}
+
 // Login function
 exports.login = function(req, res) {
     let user = new User(req.body);
