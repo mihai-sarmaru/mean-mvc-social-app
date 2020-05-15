@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
 
-// GET requests
+// Main route
 router.get("/", userController.home);
 
 // User routes
@@ -13,6 +13,7 @@ router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 
 // Post routes
+router.get("/post/:id", postController.viewSingle);
 router.get("/create-post", userController.mustBeLoggedIn, postController.viewCreateScreen);
 router.post("/create-post", userController.mustBeLoggedIn, postController.create);
 

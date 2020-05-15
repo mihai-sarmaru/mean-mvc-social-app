@@ -15,3 +15,8 @@ exports.create = function(req, res) {
         res.send(errors);
     });
 }
+
+// View single post
+exports.viewSingle = function(req, res) {
+    res.render("single-post-screen");
+}
