@@ -3,14 +3,14 @@ const postsCollection = require("../db").db().collection("posts");
 const ObjectID = require("mongodb").ObjectID;
 
 // Constructor
-let post = function(data, userid) {
+let Post = function(data, userid) {
     this.data = data;
     this.userid = userid;
     this.errors = [];
 }
 
 // Create method
-post.prototype.create = function() {
+Post.prototype.create = function() {
     return new Promise((resolve, reject) => {
         this.cleanUp();
         this.validate();
@@ -30,7 +30,7 @@ post.prototype.create = function() {
     });
 }
 
-post.prototype.cleanUp = function() {
+Post.prototype.cleanUp = function() {
     if (typeof(this.data.title) != "string") { this.data.title = "" }
     if (typeof(this.data.body) != "string") { this.data.body = "" }
 
@@ -43,10 +43,10 @@ post.prototype.cleanUp = function() {
     }
 }
 
-post.prototype.validate = function() {
+Post.prototype.validate = function() {
     if (this.data.title == "") {this.errors.push("You must provide a title.")}
     if (this.data.body == "") {this.errors.push("You must provide post content.")}
 }
 
 // Export post object
-module.exports = post;
+module.exports = Post;
