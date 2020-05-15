@@ -23,6 +23,13 @@ app.use(express.json());
 app.use(sessionOptions);
 app.use(flash());
 
+// Run this function for every request
+app.use((req, res, next) => {
+    // Have user property in EJS
+    res.locals.user = req.session.user;
+    next();
+});
+
 // Setup public folder
 app.use(express.static("public"));
 // Let express know the views folder

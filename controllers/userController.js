@@ -68,7 +68,7 @@ exports.home = function(req, res) {
     // Check for session
     if (req.session.user) {
         // Pass session username
-        res.render("home-dashboard", {username: req.session.user.username, avatar: req.session.user.avatar});
+        res.render("home-dashboard");
     } else {
         // Pass errors flash message
         res.render("home-guest", {errors: req.flash("errors"), regErrors: req.flash("regErrors")});
