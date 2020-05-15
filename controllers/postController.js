@@ -17,6 +17,12 @@ exports.create = function(req, res) {
 }
 
 // View single post
-exports.viewSingle = function(req, res) {
-    res.render("single-post-screen");
+exports.viewSingle = async function(req, res) {
+    try {
+        // Get router ID param
+        let post = await Post.findSingleByID(req.params.id);
+        res.render("single-post-screen", {post: post});
+    } catch {
+        res.send("404 template will go here");
+    }
 }
