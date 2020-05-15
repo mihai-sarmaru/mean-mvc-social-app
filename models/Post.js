@@ -48,5 +48,24 @@ Post.prototype.validate = function() {
     if (this.data.body == "") {this.errors.push("You must provide post content.")}
 }
 
+// Static method
+Post.findSingleByID = function(id) {
+    return new Promise(async function(resolve, reject) {
+        // Check if ID is valid (avoid injection)
+        if (typeof(id) != "string" || !ObjectID.isValid(id)) {
+            reject();
+            return;
+        }
+
+        // Find post by ID from mongo DB
+        let post = await postsCollection.findOne({_id: new ObjectID(id)});
+        if (post) {
+            resolve(post);
+        } else {
+            reject();
+        }
+    });
+}
+
 // Export post object
 module.exports = Post;
