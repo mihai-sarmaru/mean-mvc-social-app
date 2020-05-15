@@ -1,5 +1,5 @@
 // Require
-
+const postsCollection = require("../db").db().collection("posts");
 
 // Constructor
 let post = function(data) {
@@ -16,6 +16,12 @@ post.prototype.create = function() {
         // Check for errors
         if (!this.errors.length) {
             // Insert post into DB
+            postsCollection.insertOne(this.data).then(() => {
+                resolve();
+            }).catch(() => {
+                this.errors.push("Please try again later");
+                reject(this.errors);
+            });
         } else {
             reject(this.errors);
         }
