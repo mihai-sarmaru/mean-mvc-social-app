@@ -77,7 +77,13 @@ exports.home = function(req, res) {
 
 // Check if user exists function
 exports.ifUserExists = function(req, res, next) {
-    next();
+    User.findByUsername(req.params.username).then((userDocument) => {
+        // Return user document and sore it in request object as profileUser
+        req.profileUser = userDocument;
+        next();
+    }).catch(() => {
+        res.render("404");
+    });
 }
 
 // Profile screen function
