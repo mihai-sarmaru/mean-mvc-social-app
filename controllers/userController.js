@@ -74,3 +74,13 @@ exports.home = function(req, res) {
         res.render("home-guest", {errors: req.flash("errors"), regErrors: req.flash("regErrors")});
     }
 }
+
+// Check if user exists function
+exports.ifUserExists = function(req, res, next) {
+    next();
+}
+
+// Profile screen function
+exports.profilePostsScreen = function(req, res) {
+    res.render("profile");
+}
