@@ -15,3 +15,14 @@ exports.create = function(req, res) {
         res.send(errors);
     });
 }
+
+// View single post
+exports.viewSingle = async function(req, res) {
+    try {
+        // Get router ID param
+        let post = await Post.findSingleByID(req.params.id);
+        res.render("single-post-screen", {post: post});
+    } catch {
+        res.render("404");
+    }
+}
