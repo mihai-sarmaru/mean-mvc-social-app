@@ -23,6 +23,6 @@ exports.viewSingle = async function(req, res) {
         let post = await Post.findSingleByID(req.params.id);
         res.render("single-post-screen", {post: post});
     } catch {
-        res.send("404 template will go here");
+        res.render("404");
     }
 }
