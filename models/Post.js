@@ -58,9 +58,17 @@ Post.findSingleByID = function(id) {
         }
 
         // Find post by ID from mongo DB
-        let post = await postsCollection.findOne({_id: new ObjectID(id)});
-        if (post) {
-            resolve(post);
+        // Aggregate - array of multiple object operations
+        let posts = await postsCollection.aggregate([
+            // Select post by ID
+            {$match: {_id: new ObjectID(id)}},
+            // Select * from users where localField = foreignField as <alias>
+            {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}}
+        ]).toArray();
+        if (posts.length) {
+            console.log(posts[0]);
+            // Return first item in array
+            resolve(posts[0]);
         } else {
             reject();
         }
