@@ -1,6 +1,7 @@
 // Require
 const postsCollection = require("../db").db().collection("posts");
 const ObjectID = require("mongodb").ObjectID;
+const User = require("./User");
 
 // Constructor
 let Post = function(data, userid) {
@@ -63,8 +64,25 @@ Post.findSingleByID = function(id) {
             // Select post by ID
             {$match: {_id: new ObjectID(id)}},
             // Select * from users where localField = foreignField as <alias>
-            {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}}
+            {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
+            // Spell out what resulting aggregate object to have
+            {$project: {
+                title: 1,
+                body: 1,
+                createdDate: 1,
+                author: {$arrayElemAt: ["$authorDocument", 0]} // first (0) authorDocument element
+            }}
         ]).toArray();
+
+        // Clean author (user) property in each post object
+        posts = posts.map((post) => {
+            post.author = {
+                username: post.author.username,
+                avatar: new User(post.author, true).avatar
+            };
+            return post;
+        });
+
         if (posts.length) {
             console.log(posts[0]);
             // Return first item in array

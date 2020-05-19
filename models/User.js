@@ -5,9 +5,11 @@ const md5 = require("md5");
 const usersCollection = require("../db").db().collection("users");
 
 // Constructor with params and properties
-let User = function(receivedData) {
+let User = function(receivedData, getAvatar) {
     this.data = receivedData;
     this.errors = [];
+    if (getAvatar == undefined) {getAvatar = false}
+    if (getAvatar) {this.getAvatar();}
 }
 
 // Methods
