@@ -25,6 +25,9 @@ app.use(flash());
 
 // Run this function for every request
 app.use((req, res, next) => {
+    // Make user ID available on the req object
+    if (req.session.user) {req.visitorID = req.session.user._id}
+    else {req.visitorID = 0}
     // Have user property in EJS
     res.locals.user = req.session.user;
     next();

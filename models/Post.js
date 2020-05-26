@@ -50,19 +50,10 @@ Post.prototype.validate = function() {
 }
 
 // Static method
-Post.findSingleByID = function(id) {
+Post.reusablePostQuery = function(uniqueOperations, visitorID) {
     return new Promise(async function(resolve, reject) {
-        // Check if ID is valid (avoid injection)
-        if (typeof(id) != "string" || !ObjectID.isValid(id)) {
-            reject();
-            return;
-        }
-
-        // Find post by ID from mongo DB
-        // Aggregate - array of multiple object operations
-        let posts = await postsCollection.aggregate([
-            // Select post by ID
-            {$match: {_id: new ObjectID(id)}},
+        // Concat to the original array with aggregates
+        let aggOperations = uniqueOperations.concat([
             // Select * from users where localField = foreignField as <alias>
             {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
             // Spell out what resulting aggregate object to have
@@ -70,18 +61,42 @@ Post.findSingleByID = function(id) {
                 title: 1,
                 body: 1,
                 createdDate: 1,
+                authorID: "$author",
                 author: {$arrayElemAt: ["$authorDocument", 0]} // first (0) authorDocument element
             }}
-        ]).toArray();
+        ]);
+
+        // Find post by ID from mongo DB
+        // Aggregate - array of multiple object operations
+        let posts = await postsCollection.aggregate(aggOperations).toArray();
 
         // Clean author (user) property in each post object
         posts = posts.map((post) => {
+            // Check is visitor is post owner
+            post.isVisitorOwner = post.authorID.equals(visitorID);
             post.author = {
                 username: post.author.username,
                 avatar: new User(post.author, true).avatar
             };
             return post;
         });
+        //
+        resolve(posts);
+    });
+}
+
+Post.findSingleByID = function(id, visitorID) {
+    return new Promise(async function(resolve, reject) {
+        // Check if ID is valid (avoid injection)
+        if (typeof(id) != "string" || !ObjectID.isValid(id)) {
+            reject();
+            return;
+        }
+
+        // Pass array of operations
+        let posts = await Post.reusablePostQuery([
+            {$match: {_id: new ObjectID(id)}}
+        ], visitorID);
 
         if (posts.length) {
             console.log(posts[0]);
@@ -91,6 +106,14 @@ Post.findSingleByID = function(id) {
             reject();
         }
     });
+}
+
+Post.findByAuthorID = function(authorID) {
+    // Search by author id, and sort descending (-1) 
+    return Post.reusablePostQuery([
+        {$match: {author: authorID}},
+        {$sort: {createdDate: -1}}
+    ]);
 }
 
 // Export post object

@@ -1,5 +1,6 @@
 // Require User model
 const User = require('../models/User');
+const Post = require("../models/Post");
 
 //
 exports.mustBeLoggedIn = function(req, res, next) {
@@ -73,4 +74,29 @@ exports.home = function(req, res) {
         // Pass errors flash message
         res.render("home-guest", {errors: req.flash("errors"), regErrors: req.flash("regErrors")});
     }
+}
+
+// Check if user exists function
+exports.ifUserExists = function(req, res, next) {
+    User.findByUsername(req.params.username).then((userDocument) => {
+        // Return user document and sore it in request object as profileUser
+        req.profileUser = userDocument;
+        next();
+    }).catch(() => {
+        res.render("404");
+    });
+}
+
+// Profile screen function
+exports.profilePostsScreen = function(req, res) {
+    // Ask post model for post by an author ID
+    Post.findByAuthorID(req.profileUser._id).then((posts) => {
+        res.render("profile", {
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            posts: posts
+        });
+    }).catch(() => {
+        res.render("404");
+    });
 }
