@@ -1,6 +1,7 @@
 // Require packages
 const express = require("express");
 const session = require("express-session");
+const markdown = require("marked");
 const flash = require("connect-flash");
 const MongoStore = require("connect-mongo")(session);
 const router = require("./router");
@@ -25,12 +26,19 @@ app.use(flash());
 
 // Run this function for every request
 app.use((req, res, next) => {
+    // Markdown available in EJS templates
+    res.locals.filterUserHTML = function(content) {
+        return markdown(content);
+    }
+
     // Make all error and success flash mesages available from all templates
     res.locals.errors = req.flash("errors");
     res.locals.success = req.flash("success");
+
     // Make user ID available on the req object
     if (req.session.user) {req.visitorID = req.session.user._id}
     else {req.visitorID = 0}
+
     // Have user property in EJS
     res.locals.user = req.session.user;
     next();
