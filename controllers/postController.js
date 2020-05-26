@@ -9,10 +9,14 @@ exports.viewCreateScreen = function(req, res) {
 // Create post method
 exports.create = function(req, res) {
     let post = new Post(req.body, req.session.user._id);
-    post.create().then(() => {
-        res.send("New post created.");
+    post.create().then((newID) => {
+        // Redirect to view new post
+        req.flash("success", "New post successfully created.");
+        req.session.save(() => res.redirect(`/post/${newID}`));
     }).catch((errors) => {
-        res.send(errors);
+        // Flash error and continue
+        errors.forEach(error => req.flash("errors", error));
+        req.session.save(() => res.redirect("/create-post"));
     });
 }
 
@@ -31,7 +35,13 @@ exports.viewSingle = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
         let post = await Post.findSingleByID(req.params.id);
-        res.render("edit-post", {post: post});
+        // Check visitor is author
+        if (post.authorID == req.visitorID) {
+            res.render("edit-post", {post: post});
+        } else {
+            req.flash("errors", "You do not have permission to perform thant action.");
+            req.session.send(() => res.redirect("/"));
+        }
     } catch {
         res.render("404");
     }

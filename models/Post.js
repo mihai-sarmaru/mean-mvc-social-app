@@ -1,4 +1,5 @@
 // Require
+const sanitizeHTML = require("sanitize-html");
 const postsCollection = require("../db").db().collection("posts");
 const ObjectID = require("mongodb").ObjectID;
 const User = require("./User");
@@ -20,8 +21,9 @@ Post.prototype.create = function() {
         // Check for errors
         if (!this.errors.length) {
             // Insert post into DB
-            postsCollection.insertOne(this.data).then(() => {
-                resolve();
+            postsCollection.insertOne(this.data).then((info) => {
+                // Resolve and return new created ID
+                resolve(info.ops[0]._id);
             }).catch(() => {
                 this.errors.push("Please try again later");
                 reject(this.errors);
@@ -56,8 +58,8 @@ Post.prototype.cleanUp = function() {
 
     // Get rid of misc properties
     this.data = {
-        title: this.data.title.trim(),
-        body: this.data.body.trim(),
+        title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: []}),
+        body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: []}),
         createdDate: new Date(),
         author: ObjectID(this.userid)
     }
