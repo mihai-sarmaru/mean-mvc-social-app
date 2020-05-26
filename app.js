@@ -2,6 +2,7 @@
 const express = require("express");
 const session = require("express-session");
 const markdown = require("marked");
+const sanitizeHTML = require("sanitize-html");
 const flash = require("connect-flash");
 const MongoStore = require("connect-mongo")(session);
 const router = require("./router");
@@ -28,7 +29,10 @@ app.use(flash());
 app.use((req, res, next) => {
     // Markdown available in EJS templates
     res.locals.filterUserHTML = function(content) {
-        return markdown(content);
+        return sanitizeHTML(markdown(content), {
+            allowedTags: ["p", "br", "ul", "ol", "li", "strong", "bold", "i", "em", "h1", "h2", "h3", "h4", "h5", "h6"],
+            allowedAttributes: {}
+        });
     }
 
     // Make all error and success flash mesages available from all templates
