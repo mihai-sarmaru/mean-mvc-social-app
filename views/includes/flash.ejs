@@ -1,0 +1,9 @@
+<!-- Add ALERT flash message through EJS template -->
+<% errors.forEach((message) => { %>
+    <div class="alert alert-danger small"><%= message %></div>
+  <% }); %>
+
+  <!-- Add SUCCESS flash message through EJS template -->
+  <% success.forEach((message) => { %>
+    <div class="alert alert-success small"><%= message %></div>
+  <% }); %>
