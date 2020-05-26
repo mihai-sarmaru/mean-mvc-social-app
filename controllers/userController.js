@@ -72,7 +72,7 @@ exports.home = function(req, res) {
         res.render("home-dashboard");
     } else {
         // Pass errors flash message
-        res.render("home-guest", {errors: req.flash("errors"), regErrors: req.flash("regErrors")});
+        res.render("home-guest", {regErrors: req.flash("regErrors")});
     }
 }
 
