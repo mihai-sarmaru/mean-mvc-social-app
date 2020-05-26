@@ -39,7 +39,7 @@ exports.viewEditScreen = async function(req, res) {
 
 // Edit post
 exports.edit = function(req, res) {
-    let post = new Post(req.body);
+    let post = new Post(req.body, req.visitorID, req.params.id);
     // Call update method
     post.update().then((status) => {
         // Post was updated successfully in DB

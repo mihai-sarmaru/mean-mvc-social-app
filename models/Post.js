@@ -4,10 +4,11 @@ const ObjectID = require("mongodb").ObjectID;
 const User = require("./User");
 
 // Constructor
-let Post = function(data, userid) {
+let Post = function(data, userid, requestedPostID) {
     this.data = data;
     this.userid = userid;
     this.errors = [];
+    this.requestedPostID = requestedPostID;
 }
 
 // Create method
@@ -31,6 +32,24 @@ Post.prototype.create = function() {
     });
 }
 
+// Update method
+Post.prototype.update = function() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let post = await Post.findSingleByID(this.requestedPostID, this.userid);
+            if (post.isVisitorOwner) {
+                // Call Update DB method
+                let status = await this.updatePostInDB();
+                resolve(status);
+            } else {
+                reject();
+            }
+        } catch {
+            reject();
+        }
+    });
+}
+
 Post.prototype.cleanUp = function() {
     if (typeof(this.data.title) != "string") { this.data.title = "" }
     if (typeof(this.data.body) != "string") { this.data.body = "" }
@@ -47,6 +66,24 @@ Post.prototype.cleanUp = function() {
 Post.prototype.validate = function() {
     if (this.data.title == "") {this.errors.push("You must provide a title.")}
     if (this.data.body == "") {this.errors.push("You must provide post content.")}
+}
+
+// Update post in db method
+Post.prototype.updatePostInDB = function() {
+    return new Promise(async (resolve, reject) => {
+        this.cleanUp();
+        this.validate();
+        if (!this.errors.length) {
+            // Update document in mongo DB
+            await postsCollection.findOneAndUpdate(
+                    {_id: new ObjectID(this.requestedPostID)},
+                    {$set: {title: this.data.title, body: this.data.body}}
+                );
+            resolve("success");
+        } else {
+            resolve("failure");
+        }
+    });
 }
 
 // Static method
