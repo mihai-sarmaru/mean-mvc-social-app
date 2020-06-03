@@ -1,3 +1,6 @@
+// Import Axios package
+import axios from "axios";
+
 // Export Search class with constructor
 export default class Search {
     // 1. Constructor - prop for selecting DOM elements
@@ -61,7 +64,12 @@ export default class Search {
     }
 
     sendRequest() {
-        alert("Request sent.");
+        // Use axios to send POST request
+        axios.post("/search", {searchTerm: this.inputField.value}).then(() => {
+
+        }).catch(() => {
+            alert("request failed.");
+        });
     }
 
     showLoaderIcon() {
