@@ -8,7 +8,8 @@ export default class Search {
         // Inject Search HTML and add props
         this.injectHTML();
         this.overlay = document.querySelector(".search-overlay");
-        this.closeIcon = document.querySelector(".close-live-search");
+        this.closeIcon = document.querySelector(".close-live-search");  // . class
+        this.inputField = document.querySelector("#live-search-field"); // # id
 
         // Call the events method
         this.events();
@@ -30,6 +31,8 @@ export default class Search {
     // 3. Methods
     openOverlay() {
         this.overlay.classList.add("search-overlay--visible");
+        // Wait 50ms before attempting to focus
+        setTimeout(() => this.inputField.focus(), 50);
     }
 
     closeOverlay() {
