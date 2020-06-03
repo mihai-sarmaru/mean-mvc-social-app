@@ -13,6 +13,9 @@ export default class Search {
         this.resultsArea = document.querySelector(".live-search-results");
         this.loaderIcon = document.querySelector(".circle-loader");
 
+        this.typingWaitTimer;
+        this.previousValue = "";
+
         // Call the events method
         this.events();
     }
@@ -45,8 +48,20 @@ export default class Search {
     }
 
     keyPressHandler() {
-        // Show loader icon
-        this.showLoaderIcon();
+        let value = this.inputField.value;
+
+        if (value != "" && value != this.previousValue) {
+            clearTimeout(this.typingWaitTimer);
+            // Show loader icon and set 750ms timeout
+            this.showLoaderIcon();
+            this.typingWaitTimer = setTimeout(() => this.sendRequest(), 2000);
+        }
+
+        this.previousValue = value;
+    }
+
+    sendRequest() {
+        alert("Request sent.");
     }
 
     showLoaderIcon() {
