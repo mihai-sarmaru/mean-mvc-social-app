@@ -23,5 +23,8 @@ router.get("/post/:id/edit", userController.mustBeLoggedIn, postController.viewE
 router.post("/post/:id/edit", userController.mustBeLoggedIn, postController.edit);
 router.post("/post/:id/delete", userController.mustBeLoggedIn, postController.delete);
 
+// Search routes
+router.post("/search", postController.search);
+
 // Export router
 module.exports = router;
