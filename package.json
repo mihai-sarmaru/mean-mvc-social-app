@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/Predator7/mean-mvc-social-app#readme",
   "dependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "babel-loader": "^8.1.0",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
@@ -31,6 +34,8 @@
     "mongodb": "^3.5.7",
     "nodemon": "^2.0.3",
     "sanitize-html": "^1.24.0",
-    "validator": "^13.0.0"
+    "validator": "^13.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
