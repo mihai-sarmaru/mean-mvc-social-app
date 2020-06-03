@@ -65,8 +65,8 @@ export default class Search {
 
     sendRequest() {
         // Use axios to send POST request
-        axios.post("/search", {searchTerm: this.inputField.value}).then(() => {
-
+        axios.post("/search", {searchTerm: this.inputField.value}).then(response => {
+            console.log(response.data);
         }).catch(() => {
             alert("request failed.");
         });
