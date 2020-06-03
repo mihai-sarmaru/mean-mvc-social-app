@@ -155,5 +155,22 @@ Post.findByAuthorID = function(authorID) {
     ]);
 }
 
+// Delete post from DB
+Post.delete = function(postIDToDelete, currentUserID) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let post = await Post.findSingleByID(postIDToDelete, currentUserID);
+            if (post.isVisitorOwner) {
+                await postsCollection.deleteOne({_id: new ObjectID(postIDToDelete)});
+                resolve();
+            } else {
+                reject();
+            }
+        } catch {
+            reject();
+        }
+    });
+}
+
 // Export post object
 module.exports = Post;
