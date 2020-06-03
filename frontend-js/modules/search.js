@@ -10,6 +10,8 @@ export default class Search {
         this.overlay = document.querySelector(".search-overlay");
         this.closeIcon = document.querySelector(".close-live-search");  // . class
         this.inputField = document.querySelector("#live-search-field"); // # id
+        this.resultsArea = document.querySelector(".live-search-results");
+        this.loaderIcon = document.querySelector(".circle-loader");
 
         // Call the events method
         this.events();
@@ -26,6 +28,9 @@ export default class Search {
 
         // Close icon click event
         this.closeIcon.addEventListener("click", () => this.closeOverlay());
+
+        // Add key press event
+        this.inputField.addEventListener("keyup", () => this.keyPressHandler());
     }
 
     // 3. Methods
@@ -37,6 +42,15 @@ export default class Search {
 
     closeOverlay() {
         this.overlay.classList.remove("search-overlay--visible");
+    }
+
+    keyPressHandler() {
+        // Show loader icon
+        this.showLoaderIcon();
+    }
+
+    showLoaderIcon() {
+        this.loaderIcon.classList.add("circle-loader--visible");
     }
 
     // Overlay HTML for Search feature
@@ -55,7 +69,7 @@ export default class Search {
           <div class="search-overlay-bottom">
             <div class="container container--narrow py-3">
               <div class="circle-loader"></div>
-              <div class="live-search-results live-search-results--visible">
+              <div class="live-search-results">
                 <div class="list-group shadow-sm">
                   <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
       
