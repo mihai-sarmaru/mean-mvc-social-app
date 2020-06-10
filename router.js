@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
+const followController = require('./controllers/followController');
 
 // Main route
 router.get("/", userController.home);
@@ -25,6 +26,9 @@ router.post("/post/:id/delete", userController.mustBeLoggedIn, postController.de
 
 // Search routes
 router.post("/search", postController.search);
+
+// Follow routes
+router.post("/addFollow/:username", userController.mustBeLoggedIn, followController.addFollow);
 
 // Export router
 module.exports = router;
