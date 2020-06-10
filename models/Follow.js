@@ -63,6 +63,9 @@ Follow.prototype.validate = async function(action) {
     if (action == "delete") {
         if (!doesFollowAlreadyExists) {this.errors.push("You cannot stop following someone you do not already follow.")}
     }
+
+    // Not following yourself
+    if (this.followedID.equals(this.authorID)) {this.errors.push("You cannot follow youself.")}
 }
 
 // Visitor following method
