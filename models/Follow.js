@@ -40,4 +40,10 @@ Follow.prototype.validate = async function() {
     }
 }
 
+// Visitor following method
+Follow.isVisitorFollowing = async function(followedUserID, visitorID) {
+    let followDoc = await followsCollection.findOne({followedID: followedUserID, authorID: new ObjectID(visitorID)});
+    return followDoc ? true : false;
+}
+
 module.exports = Follow;

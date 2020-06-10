@@ -95,7 +95,8 @@ exports.profilePostsScreen = function(req, res) {
         res.render("profile", {
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
-            posts: posts
+            posts: posts,
+            isFollowing: req.isFollowing
         });
     }).catch(() => {
         res.render("404");
@@ -103,10 +104,10 @@ exports.profilePostsScreen = function(req, res) {
 }
 
 // Shared profile function
-exports.sharedProfileData = function(req, res, next) {
+exports.sharedProfileData = async function(req, res, next) {
     let isFollowing = false;
     if (req.session.user) {
-        isFollowing = await Follow.isVisitorFollowing(request.profileUser._id, req.visitorID);
+        isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorID);
     }
     req.isFollowing = isFollowing;
     next();
