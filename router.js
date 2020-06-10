@@ -29,6 +29,7 @@ router.post("/search", postController.search);
 
 // Follow routes
 router.post("/addFollow/:username", userController.mustBeLoggedIn, followController.addFollow);
+router.post("/removeFollow/:username", userController.mustBeLoggedIn, followController.removeFollow);
 
 // Export router
 module.exports = router;
