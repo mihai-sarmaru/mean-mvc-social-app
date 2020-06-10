@@ -1,6 +1,8 @@
 // Require database
 const usersCollection = require("../db").db().collection("users");
 const followsCollection = require("../db").db().collection("follows");
+// Require mongo object ID
+const ObjectID = require("mongodb").ObjectID;
 
 // Follow object
 let Follow = function(followedUsername, authorID) {
@@ -10,15 +12,22 @@ let Follow = function(followedUsername, authorID) {
 }
 
 Follow.prototype.create = function() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         this.cleanUp();
         await this.validate();
+        if (!this.errors.length) {
+            // save followers in DB
+            await followsCollection.insertOne({followedID: this.followedID, authorID: new ObjectID(this.authorID)});
+            resolve();
+        } else {
+            reject(this.errors);
+        }
     });
 }
 
 Follow.prototype.cleanUp = function() {
     // check if string
-    if (typeof(this.followedUsername != "string")) {this.followedUsername = ""}
+    if (typeof(this.followedUsername) != "string") {this.followedUsername = ""}
 }
 
 Follow.prototype.validate = async function() {
