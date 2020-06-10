@@ -1,6 +1,7 @@
 // Require User model
 const User = require('../models/User');
 const Post = require("../models/Post");
+const Follow = require("../models/Follow");
 
 //
 exports.mustBeLoggedIn = function(req, res, next) {
@@ -99,4 +100,14 @@ exports.profilePostsScreen = function(req, res) {
     }).catch(() => {
         res.render("404");
     });
+}
+
+// Shared profile function
+exports.sharedProfileData = function(req, res, next) {
+    let isFollowing = false;
+    if (req.session.user) {
+        isFollowing = await Follow.isVisitorFollowing(request.profileUser._id, req.visitorID);
+    }
+    req.isFollowing = isFollowing;
+    next();
 }

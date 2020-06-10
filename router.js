@@ -14,7 +14,7 @@ router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 
 // Profile routes
-router.get("/profile/:username", userController.ifUserExists, userController.profilePostsScreen);
+router.get("/profile/:username", userController.ifUserExists, userController.sharedProfileData, userController.profilePostsScreen);
 
 // Post routes
 router.get("/post/:id", postController.viewSingle);
