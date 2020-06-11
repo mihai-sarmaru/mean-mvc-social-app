@@ -98,7 +98,8 @@ exports.profilePostsScreen = function(req, res) {
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
             isFollowing: req.isFollowing,
-            isVisitorsProfile: req.isVisitorsProfile
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
         });
     }).catch(() => {
         res.render("404");
@@ -115,7 +116,8 @@ exports.profileFollowersScreen = async function(req, res) {
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
             isFollowing: req.isFollowing,
-            isVisitorsProfile: req.isVisitorsProfile
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
         });
     } catch {
         res.render("404");
@@ -132,7 +134,8 @@ exports.profileFollowingScreen = async function(req, res) {
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
             isFollowing: req.isFollowing,
-            isVisitorsProfile: req.isVisitorsProfile
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
         });
     } catch {
         res.render("404");
@@ -149,5 +152,20 @@ exports.sharedProfileData = async function(req, res, next) {
     }
     req.isFollowing = isFollowing;
     req.isVisitorsProfile = isVisitorsProfile;
+
+    // get post, followers, following counts
+    let postCountPromise = Post.countPostsByAuthor(req.profileUser._id);
+    let followerCountPromise = Follow.countFollowersByID(req.profileUser._id);
+    let followingCountPromise = Follow.countFollowingByID(req.profileUser._id);
+
+    // Wait for all promises to complete - returns array
+    // returned array destructuring
+    let [postCount, followerCount, followingCount] = await Promise.all([postCountPromise, followerCountPromise, followingCountPromise]);
+
+    // Add destructed results to request object
+    req.postCount = postCount;
+    req.followerCount = followerCount;
+    req.followingCount = followingCount;
+
     next();
 }
