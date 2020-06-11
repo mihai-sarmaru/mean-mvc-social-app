@@ -106,4 +106,34 @@ Follow.getFollowersByID = function(id) {
     });
 }
 
+// Get following from DB using aggregate
+Follow.getFollowingByID = function(id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // agregate - array of objects [{}, {}, {}]
+            // search authorID by ID,
+            // search in users collection by followID in users _id field as new userDoc
+            // return only username and email
+            let following = await followsCollection.aggregate([
+                {$match: {authorID: id}},
+                {$lookup: {from: "users", localField: "followedID", foreignField: "_id", as: "userDoc"}},
+                {$project: {
+                    username: {$arrayElemAt: ["$userDoc.username", 0]},
+                    email: {$arrayElemAt: ["$userDoc.email", 0]}
+                }}
+            ]).toArray();
+            
+            // map new followers array
+            following = following.map((follower) => {
+                // create a user
+                let user = new User(follower, true);
+                return {username: follower.username, avatar: user.avatar}
+            });
+            resolve(following);
+        } catch {
+            reject();
+        }
+    });
+}
+
 module.exports = Follow;

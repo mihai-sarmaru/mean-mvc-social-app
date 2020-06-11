@@ -120,6 +120,22 @@ exports.profileFollowersScreen = async function(req, res) {
     }
 }
 
+// Profile following screen function
+exports.profileFollowingScreen = async function(req, res) {
+    try {
+        let following = await Follow.getFollowingByID(req.profileUser._id);
+        res.render("profile-following", {
+            following: following,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisitorsProfile: req.isVisitorsProfile
+        });
+    } catch {
+        res.render("404");
+    }
+}
+
 // Shared profile function
 exports.sharedProfileData = async function(req, res, next) {
     let isFollowing = false;
