@@ -66,11 +66,12 @@ exports.register = function(req, res) {
 }
 
 // Home function
-exports.home = function(req, res) {
+exports.home = async function(req, res) {
     // Check for session
     if (req.session.user) {
-        // Pass session username
-        res.render("home-dashboard");
+        // Get posts feed for current user
+        let posts = await Post.getFeed(req.session.user._id);
+        res.render("home-dashboard", {posts: posts});
     } else {
         // Pass errors flash message
         res.render("home-guest", {regErrors: req.flash("regErrors")});
