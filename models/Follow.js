@@ -1,6 +1,8 @@
 // Require database
 const usersCollection = require("../db").db().collection("users");
 const followsCollection = require("../db").db().collection("follows");
+// Require user model
+const User = require("./User");
 // Require mongo object ID
 const ObjectID = require("mongodb").ObjectID;
 
@@ -72,6 +74,36 @@ Follow.prototype.validate = async function(action) {
 Follow.isVisitorFollowing = async function(followedUserID, visitorID) {
     let followDoc = await followsCollection.findOne({followedID: followedUserID, authorID: new ObjectID(visitorID)});
     return followDoc ? true : false;
+}
+
+// Get followers from DB using aggregate
+Follow.getFollowersByID = function(id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // agregate - array of objects [{}, {}, {}]
+            // search followedID by ID,
+            // search in users collection by authorID in users _id field as new userDoc
+            // return only username and email
+            let followers = await followsCollection.aggregate([
+                {$match: {followedID: id}},
+                {$lookup: {from: "users", localField: "authorID", foreignField: "_id", as: "userDoc"}},
+                {$project: {
+                    username: {$arrayElemAt: ["$userDoc.username", 0]},
+                    email: {$arrayElemAt: ["$userDoc.email", 0]}
+                }}
+            ]).toArray();
+            
+            // map new followers array
+            followers = followers.map((follower) => {
+                // create a user
+                let user = new User(follower, true);
+                return {username: follower.username, avatar: user.avatar}
+            });
+            resolve(followers);
+        } catch {
+            reject();
+        }
+    });
 }
 
 module.exports = Follow;
