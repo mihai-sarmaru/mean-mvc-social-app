@@ -88,7 +88,7 @@ exports.ifUserExists = function(req, res, next) {
     });
 }
 
-// Profile screen function
+// Profile posts screen function
 exports.profilePostsScreen = function(req, res) {
     // Ask post model for post by an author ID
     Post.findByAuthorID(req.profileUser._id).then((posts) => {
@@ -102,6 +102,22 @@ exports.profilePostsScreen = function(req, res) {
     }).catch(() => {
         res.render("404");
     });
+}
+
+// Profile followers screen function
+exports.profileFollowersScreen = async function(req, res) {
+    try {
+        let followers = await Follow.getFollowersByID(req.profileUser._id);
+        res.render("profile-followers", {
+            followers: followers,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisitorsProfile: req.isVisitorsProfile
+        });
+    } catch {
+        res.render("404");
+    }
 }
 
 // Shared profile function
