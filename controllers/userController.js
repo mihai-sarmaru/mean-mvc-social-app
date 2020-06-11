@@ -93,9 +93,10 @@ exports.profilePostsScreen = function(req, res) {
     // Ask post model for post by an author ID
     Post.findByAuthorID(req.profileUser._id).then((posts) => {
         res.render("profile", {
+            currentPage: "posts",
+            posts: posts,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
-            posts: posts,
             isFollowing: req.isFollowing,
             isVisitorsProfile: req.isVisitorsProfile
         });
@@ -109,6 +110,7 @@ exports.profileFollowersScreen = async function(req, res) {
     try {
         let followers = await Follow.getFollowersByID(req.profileUser._id);
         res.render("profile-followers", {
+            currentPage: "followers",
             followers: followers,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
@@ -125,6 +127,7 @@ exports.profileFollowingScreen = async function(req, res) {
     try {
         let following = await Follow.getFollowingByID(req.profileUser._id);
         res.render("profile-following", {
+            currentPage: "following",
             following: following,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
