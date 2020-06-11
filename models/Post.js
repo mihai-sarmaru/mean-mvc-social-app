@@ -190,5 +190,13 @@ Post.search = function(searchTerm) {
     });
 }
 
+// Count posts in DB
+Post.countPostsByAuthor = function(id) {
+    return new Promise(async (resolve, reject) => {
+        let postCount = await postsCollection.countDocuments({author: id});
+        resolve(postCount);
+    });
+}
+
 // Export post object
 module.exports = Post;
