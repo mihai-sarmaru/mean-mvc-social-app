@@ -1,6 +1,7 @@
 // Require User model
 const User = require('../models/User');
 const Post = require("../models/Post");
+const Follow = require("../models/Follow");
 
 //
 exports.mustBeLoggedIn = function(req, res, next) {
@@ -65,11 +66,12 @@ exports.register = function(req, res) {
 }
 
 // Home function
-exports.home = function(req, res) {
+exports.home = async function(req, res) {
     // Check for session
     if (req.session.user) {
-        // Pass session username
-        res.render("home-dashboard");
+        // Get posts feed for current user
+        let posts = await Post.getFeed(req.session.user._id);
+        res.render("home-dashboard", {posts: posts});
     } else {
         // Pass errors flash message
         res.render("home-guest", {regErrors: req.flash("regErrors")});
@@ -87,16 +89,84 @@ exports.ifUserExists = function(req, res, next) {
     });
 }
 
-// Profile screen function
+// Profile posts screen function
 exports.profilePostsScreen = function(req, res) {
     // Ask post model for post by an author ID
     Post.findByAuthorID(req.profileUser._id).then((posts) => {
         res.render("profile", {
+            currentPage: "posts",
+            posts: posts,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
-            posts: posts
+            isFollowing: req.isFollowing,
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
         });
     }).catch(() => {
         res.render("404");
     });
+}
+
+// Profile followers screen function
+exports.profileFollowersScreen = async function(req, res) {
+    try {
+        let followers = await Follow.getFollowersByID(req.profileUser._id);
+        res.render("profile-followers", {
+            currentPage: "followers",
+            followers: followers,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
+        });
+    } catch {
+        res.render("404");
+    }
+}
+
+// Profile following screen function
+exports.profileFollowingScreen = async function(req, res) {
+    try {
+        let following = await Follow.getFollowingByID(req.profileUser._id);
+        res.render("profile-following", {
+            currentPage: "following",
+            following: following,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisitorsProfile: req.isVisitorsProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
+        });
+    } catch {
+        res.render("404");
+    }
+}
+
+// Shared profile function
+exports.sharedProfileData = async function(req, res, next) {
+    let isFollowing = false;
+    let isVisitorsProfile = false;
+    if (req.session.user) {
+        isVisitorsProfile = req.profileUser._id.equals(req.session.user._id);
+        isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorID);
+    }
+    req.isFollowing = isFollowing;
+    req.isVisitorsProfile = isVisitorsProfile;
+
+    // get post, followers, following counts
+    let postCountPromise = Post.countPostsByAuthor(req.profileUser._id);
+    let followerCountPromise = Follow.countFollowersByID(req.profileUser._id);
+    let followingCountPromise = Follow.countFollowingByID(req.profileUser._id);
+
+    // Wait for all promises to complete - returns array
+    // returned array destructuring
+    let [postCount, followerCount, followingCount] = await Promise.all([postCountPromise, followerCountPromise, followingCountPromise]);
+
+    // Add destructed results to request object
+    req.postCount = postCount;
+    req.followerCount = followerCount;
+    req.followingCount = followingCount;
+
+    next();
 }
