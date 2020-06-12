@@ -7,6 +7,8 @@ export default class Chat {
         this.openIcon = document.querySelector(".header-chat-icon");
         this.injectHTML();
 
+        this.chatLog = document.querySelector("#chat");
+
         // Chat properties
         this.chatField = document.querySelector("#chatField");
         this.chatForm = document.querySelector("#chatForm");
@@ -47,8 +49,13 @@ export default class Chat {
         // Call IO function from footer IO JS
         this.socket = io();
         this.socket.on("chatMessageFromServer", (data) => {
-            alert(data.message);
+            this.displayMessageFromServer(data);
         });
+    }
+
+    displayMessageFromServer(data) {
+        // Display messages in chat box
+        this.chatLog.insertAdjacentHTML("beforeend", `<p>${data.message}</p>`);
     }
 
     sendMessageToServer() {
