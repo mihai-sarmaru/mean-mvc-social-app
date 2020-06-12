@@ -1,3 +1,6 @@
+// Imports
+import DOMPurify from "dompurify";
+
 // Export Chat class
 export default class Chat {
     // Constructor
@@ -66,15 +69,15 @@ export default class Chat {
 
     displayMessageFromServer(data) {
         // Display messages in chat box
-        this.chatLog.insertAdjacentHTML("beforeend", `
-        <div class="chat-other">
-            <a href="#"><img class="avatar-tiny" src="${data.avatar}"></a>
-            <div class="chat-message"><div class="chat-message-inner">
-            <a href="#"><strong>${data.username}:</strong></a>
-            ${data.message}
-            </div></div>
-        </div>
-        `);
+        this.chatLog.insertAdjacentHTML("beforeend", DOMPurify.sanitize(`
+            <div class="chat-other">
+                <a href="#"><img class="avatar-tiny" src="${data.avatar}"></a>
+                <div class="chat-message"><div class="chat-message-inner">
+                <a href="#"><strong>${data.username}:</strong></a>
+                ${data.message}
+                </div></div>
+            </div>
+        `));
 
         // Scroll to the bottom
         this.chatLog.scrollTop = this.chatLog.scrollHeight;
@@ -84,16 +87,16 @@ export default class Chat {
         // EMIT - custom event name, Data to send
         this.socket.emit("chatMessageFromBrowser", {message: this.chatField.value});
         
-        this.chatLog.insertAdjacentHTML("beforeend", `
-        <div class="chat-self">
-            <div class="chat-message">
-            <div class="chat-message-inner">
-                ${this.chatField.value}
+        this.chatLog.insertAdjacentHTML("beforeend", DOMPurify.sanitize(`
+            <div class="chat-self">
+                <div class="chat-message">
+                    <div class="chat-message-inner">
+                        ${this.chatField.value}
+                    </div>
+                </div>
+                <img class="chat-avatar avatar-tiny" src="${this.avatar}">
             </div>
-            </div>
-            <img class="chat-avatar avatar-tiny" src="${this.avatar}">
-        </div>
-        `);
+        `));
 
         // Scroll to the bottom
         this.chatLog.scrollTop = this.chatLog.scrollHeight;

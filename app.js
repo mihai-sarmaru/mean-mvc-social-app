@@ -79,7 +79,8 @@ io.on("connection", (socket) => {
         
         socket.on("chatMessageFromBrowser", (data) => {
             // EMIT event to everyone data, plus session user and avatar (except you)
-            socket.broadcast.emit("chatMessageFromServer", {message: data.message, username: user.username, avatar: user.avatar});
+            sanitizedMessage = sanitizeHTML(data.message, {allowedTags: [], allowedAttributes: []});
+            socket.broadcast.emit("chatMessageFromServer", {message: sanitizedMessage, username: user.username, avatar: user.avatar});
         });
     }
 });
