@@ -62,12 +62,22 @@ app.use("/", router);
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
+// Function to run on each new transfer of data
+io.use((socket, next) => {
+    // Make Express available from socket
+    sessionOptions(socket.request, socket.request.res, next);
+});
+
 // Use socket connection with custom events
 io.on("connection", (socket) => {
-    socket.on("chatMessageFromBrowser", (data) => {
-        // EMIT event to everyone
-        io.emit("chatMessageFromServer", {message: data.message});
-    });
+    // Only if user is logged in
+    if (socket.request.session.user) {
+        let user = socket.request.session.user;
+        socket.on("chatMessageFromBrowser", (data) => {
+            // EMIT event to everyone data, plus session user and avatar
+            io.emit("chatMessageFromServer", {message: data.message, username: user.username, avatar: user.avatar});
+        });
+    }
 });
 
 // Export server application
