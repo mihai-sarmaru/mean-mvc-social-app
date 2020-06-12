@@ -33,7 +33,8 @@ export default class Chat {
     }
 
     openConnection() {
-        alert("Openning a connection");
+        // Call IO function from footer IO JS
+        this.socket = io();
     }
 
     injectHTML() {

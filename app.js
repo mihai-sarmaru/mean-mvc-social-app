@@ -58,5 +58,14 @@ app.set("view engine", "ejs");
 // Use main router
 app.use("/", router);
 
-// Export express application
-module.exports = app;
+// Server that uses Express app as it's handler
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+
+// test docket connection
+io.on("connection", () => {
+    console.log("New user connected.");
+});
+
+// Export server application
+module.exports = server;
