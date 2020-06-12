@@ -3,16 +3,31 @@ export default class Chat {
     // Constructor
     constructor() {
         this.chatWrapper = document.querySelector("#chat-wrapper");
+        this.openIcon = document.querySelector(".header-chat-icon");
         this.injectHTML();
+        this.closeIcon = document.querySelector(".chat-title-bar-close");
         this.events();
     }
 
     // Events
     events() {
-
+        // Click event on chat icon
+        this.openIcon.addEventListener("click", () => this.showChat());
+        // Click event on hide chat icon
+        this.closeIcon.addEventListener("click", () => this.hideChat());
     }
 
     // Methods
+
+    // Make chat box visible
+    showChat() {
+        this.chatWrapper.classList.add("chat--visible");
+    }
+    // Hide chat box
+    hideChat() {
+        this.chatWrapper.classList.remove("chat--visible");
+    }
+
     injectHTML() {
         this.chatWrapper.innerHTML = `
         <div class="chat-title-bar">Chat <span class="chat-title-bar-close"><i class="fas fa-times-circle"></i></span></div>
