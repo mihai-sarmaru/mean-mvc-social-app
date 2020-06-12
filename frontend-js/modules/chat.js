@@ -72,6 +72,9 @@ export default class Chat {
             </div></div>
         </div>
         `);
+
+        // Scroll to the bottom
+        this.chatLog.scrollTop = this.chatLog.scrollHeight;
     }
 
     sendMessageToServer() {
@@ -88,6 +91,9 @@ export default class Chat {
             <img class="chat-avatar avatar-tiny" src="${this.avatar}">
         </div>
         `);
+
+        // Scroll to the bottom
+        this.chatLog.scrollTop = this.chatLog.scrollHeight;
 
         // Clear and focus field
         this.chatField.value = "";
