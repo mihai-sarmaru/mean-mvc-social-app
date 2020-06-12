@@ -73,9 +73,13 @@ io.on("connection", (socket) => {
     // Only if user is logged in
     if (socket.request.session.user) {
         let user = socket.request.session.user;
+
+        // Emit welcome message containing username and avatar
+        socket.emit("welcome", {username: user.username, avatar: user.avatar});
+        
         socket.on("chatMessageFromBrowser", (data) => {
-            // EMIT event to everyone data, plus session user and avatar
-            io.emit("chatMessageFromServer", {message: data.message, username: user.username, avatar: user.avatar});
+            // EMIT event to everyone data, plus session user and avatar (except you)
+            socket.broadcast.emit("chatMessageFromServer", {message: data.message, username: user.username, avatar: user.avatar});
         });
     }
 });

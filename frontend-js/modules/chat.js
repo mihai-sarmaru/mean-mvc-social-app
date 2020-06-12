@@ -48,6 +48,14 @@ export default class Chat {
     openConnection() {
         // Call IO function from footer IO JS
         this.socket = io();
+
+        // Welcome event with username and avatar
+        this.socket.on("welcome", (data) => {
+            this.username = data.username;
+            this.avatar = data.avatar;
+        });
+
+        // Display message from server
         this.socket.on("chatMessageFromServer", (data) => {
             this.displayMessageFromServer(data);
         });
@@ -69,6 +77,19 @@ export default class Chat {
     sendMessageToServer() {
         // EMIT - custom event name, Data to send
         this.socket.emit("chatMessageFromBrowser", {message: this.chatField.value});
+        
+        this.chatLog.insertAdjacentHTML("beforeend", `
+        <div class="chat-self">
+            <div class="chat-message">
+            <div class="chat-message-inner">
+                ${this.chatField.value}
+            </div>
+            </div>
+            <img class="chat-avatar avatar-tiny" src="${this.avatar}">
+        </div>
+        `);
+
+        // Clear and focus field
         this.chatField.value = "";
         this.chatField.focus();
     }
