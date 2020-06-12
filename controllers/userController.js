@@ -94,6 +94,7 @@ exports.profilePostsScreen = function(req, res) {
     // Ask post model for post by an author ID
     Post.findByAuthorID(req.profileUser._id).then((posts) => {
         res.render("profile", {
+            title: `Profile for ${req.profileUser.username}`,
             currentPage: "posts",
             posts: posts,
             profileUsername: req.profileUser.username,

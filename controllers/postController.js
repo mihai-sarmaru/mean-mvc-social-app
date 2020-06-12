@@ -25,7 +25,7 @@ exports.viewSingle = async function(req, res) {
     try {
         // Get router ID param
         let post = await Post.findSingleByID(req.params.id, req.visitorID);
-        res.render("single-post-screen", {post: post});
+        res.render("single-post-screen", {post: post, title: post.title});
     } catch {
         res.render("404");
     }
