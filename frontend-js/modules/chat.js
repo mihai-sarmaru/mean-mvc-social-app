@@ -2,6 +2,7 @@
 export default class Chat {
     // Constructor
     constructor() {
+        this.openedYet = false;
         this.chatWrapper = document.querySelector("#chat-wrapper");
         this.openIcon = document.querySelector(".header-chat-icon");
         this.injectHTML();
@@ -21,11 +22,18 @@ export default class Chat {
 
     // Make chat box visible
     showChat() {
+        // Prevent user spamming hide button
+        if (!this.openedYet) {this.openConnection();}
+        this.openedYet = true;
         this.chatWrapper.classList.add("chat--visible");
     }
     // Hide chat box
     hideChat() {
         this.chatWrapper.classList.remove("chat--visible");
+    }
+
+    openConnection() {
+        alert("Openning a connection");
     }
 
     injectHTML() {
