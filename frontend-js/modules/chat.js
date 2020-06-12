@@ -46,6 +46,9 @@ export default class Chat {
     openConnection() {
         // Call IO function from footer IO JS
         this.socket = io();
+        this.socket.on("chatMessageFromServer", (data) => {
+            alert(data.message);
+        });
     }
 
     sendMessageToServer() {

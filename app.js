@@ -62,9 +62,12 @@ app.use("/", router);
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
-// test docket connection
-io.on("connection", () => {
-    console.log("New user connected.");
+// Use socket connection with custom events
+io.on("connection", (socket) => {
+    socket.on("chatMessageFromBrowser", (data) => {
+        // EMIT event to everyone
+        io.emit("chatMessageFromServer", {message: data.message});
+    });
 });
 
 // Export server application
