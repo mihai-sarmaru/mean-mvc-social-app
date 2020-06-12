@@ -39,6 +39,9 @@ export default class Chat {
         if (!this.openedYet) {this.openConnection();}
         this.openedYet = true;
         this.chatWrapper.classList.add("chat--visible");
+
+        // Focus on chat field
+        this.chatField.focus();
     }
     // Hide chat box
     hideChat() {
