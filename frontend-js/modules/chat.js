@@ -6,6 +6,11 @@ export default class Chat {
         this.chatWrapper = document.querySelector("#chat-wrapper");
         this.openIcon = document.querySelector(".header-chat-icon");
         this.injectHTML();
+
+        // Chat properties
+        this.chatField = document.querySelector("#chatField");
+        this.chatForm = document.querySelector("#chatForm");
+        
         this.closeIcon = document.querySelector(".chat-title-bar-close");
         this.events();
     }
@@ -16,6 +21,12 @@ export default class Chat {
         this.openIcon.addEventListener("click", () => this.showChat());
         // Click event on hide chat icon
         this.closeIcon.addEventListener("click", () => this.hideChat());
+
+        // Submit chat box field event
+        this.chatForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            this.sendMessageToServer();
+        });
     }
 
     // Methods
@@ -35,6 +46,13 @@ export default class Chat {
     openConnection() {
         // Call IO function from footer IO JS
         this.socket = io();
+    }
+
+    sendMessageToServer() {
+        // EMIT - custom event name, Data to send
+        this.socket.emit("chatMessageFromBrowser", {message: this.chatField.value});
+        this.chatField.value = "";
+        this.chatField.focus();
     }
 
     injectHTML() {
